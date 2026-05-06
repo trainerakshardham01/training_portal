@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akshardham — Sales Training Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f6fb;--bg2:#eef1f8;--card:#ffffff;--card2:#f9fafc;
+  --sb:#1a2540;--sb2:#223059;
+  --g1:#b8891e;--g2:#d4a32a;--g3:#e8bc42;--g4:#fdf3d0;
+  --t0:#1a2035;--t1:#3a4a6b;--t2:#6b7fa8;--t3:#a0aec8;
+  --brd:#dde3f0;--brd2:#c8d0e8;--sbrd:rgba(255,255,255,.1);
+  --grn:#27a871;--red:#e05252;--blu:#3d7fd4;--orn:#e07a2a;
+  --shadow:0 2px 12px rgba(26,32,64,.08);
+  --shadow2:0 4px 24px rgba(26,32,64,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t0);min-height:100vh}
+h1,h2,h3,h4{font-family:'Playfair Display',serif}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:4px}
+
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex}
+
+/* ══ LOGIN ══ */
+#scLogin{align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#eef1f8 0%,#f4f6fb 60%,#e8edf8 100%);
+  position:relative;overflow:hidden}
+#scLogin::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(184,137,30,.08) 0%,transparent 70%);
+  top:-200px;right:-100px}
+#scLogin::after{content:'';position:absolute;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(61,127,212,.06) 0%,transparent 70%);
+  bottom:-100px;left:-80px}
+
+.lbox{background:var(--card);border:1px solid var(--brd);border-radius:22px;
+  padding:44px 40px;width:420px;position:relative;
+  box-shadow:0 20px 60px rgba(26,32,64,.14);z-index:1;animation:fadeUp .4s ease}
+.lbox::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--g1),var(--g3),var(--g1));border-radius:22px 22px 0 0}
+.lbrand{font-family:'Playfair Display',serif;font-size:16px;color:var(--g2);letter-spacing:.5px}
+.lsep{width:32px;height:2px;background:var(--g2);margin:12px 0 18px;opacity:.9}
+.ltitle{font-size:22px;font-weight:600;color:var(--t0);margin-bottom:5px}
+.lsub{font-size:13px;color:var(--t2);margin-bottom:26px;line-height:1.6}
+.lbl{font-size:11.5px;color:var(--t1);display:block;margin-bottom:6px;font-weight:500;letter-spacing:.1px}
+.inp{width:100%;background:var(--bg);border:1.5px solid var(--brd);
+  color:var(--t0);padding:12px 15px;border-radius:11px;font-family:'DM Sans',sans-serif;
+  font-size:14px;outline:none;transition:all .2s;margin-bottom:14px}
+.inp:focus{border-color:var(--g2);background:#fff;box-shadow:0 0 0 3px rgba(184,137,30,.1)}
+.inp::placeholder{color:var(--t3)}
+.inp option{background:#fff;color:var(--t0)}
+.btn-g{background:linear-gradient(135deg,var(--g1),var(--g3));color:#fff;
+  font-weight:600;padding:13px;border-radius:11px;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:14.5px;width:100%;letter-spacing:.2px;transition:all .2s}
+.btn-g:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(184,137,30,.35)}
+.btn-g:active{transform:none}
+.login-tabs{display:flex;gap:8px;margin-bottom:22px}
+.ltab{flex:1;padding:9px;border-radius:9px;border:1.5px solid var(--brd);background:transparent;
+  color:var(--t2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+.ltab.on{background:var(--g4);color:var(--g1);border-color:var(--g3);font-weight:500}
+.ltab:hover:not(.on){background:var(--bg2);color:var(--t1)}
+
+/* ══ APP ══ */
+#scApp{flex-direction:row;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+#sb{width:258px;min-width:258px;background:var(--sb);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:2px 0 20px rgba(0,0,0,.12)}
+.sbh{padding:20px 16px 16px;border-bottom:1px solid var(--sbrd)}
+.sblogo{font-family:'Playfair Display',serif;font-size:14.5px;color:var(--g3);line-height:1.4}
+.sbsub{font-size:11px;color:rgba(255,255,255,.35);font-family:'DM Sans',sans-serif;margin-top:2px}
+.sbuser{margin-top:12px;background:rgba(255,255,255,.06);border:1px solid var(--sbrd);
+  border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:9px}
+.sbav{width:30px;height:30px;background:linear-gradient(135deg,var(--g1),var(--g3));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.sbname{font-size:12.5px;font-weight:500;color:#fff}
+.sbmob{font-size:11px;color:rgba(255,255,255,.4)}
+.sbnav{flex:1;overflow-y:auto;padding:12px 10px}
+.sbnav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15)}
+.navlbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.3);padding:0 8px;margin:4px 0 8px}
+
+/* Nav module buttons */
+.mbtn{width:100%;display:flex;align-items:center;gap:9px;padding:9px 10px;
+  border-radius:10px;border:none;background:transparent;color:rgba(255,255,255,.5);
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12.5px;
+  text-align:left;transition:all .15s;margin-bottom:2px}
+.mbtn:hover:not(.locked){background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.mbtn.act{background:rgba(212,163,42,.18);color:var(--g3)}
+.mbtn.done{color:rgba(255,255,255,.7)}
+.mbtn.locked{cursor:not-allowed;opacity:.45}
+.mnum{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;
+  background:rgba(255,255,255,.1)}
+.mbtn.act .mnum{background:var(--g3);color:#1a2540}
+.mbtn.done .mnum{background:rgba(39,168,113,.2);color:var(--grn)}
+.mbtn.locked .mnum{background:rgba(255,255,255,.06)}
+.mtxt{flex:1;line-height:1.3;font-size:12px}
+.mchk{margin-left:auto;color:var(--grn);font-size:11px;display:none}
+.mbtn.done .mchk{display:block}
+.mlck{margin-left:auto;font-size:10px;opacity:.5;display:none}
+.mbtn.locked .mlck{display:block}
+
+.sbft{padding:10px;border-top:1px solid var(--sbrd);display:flex;gap:8px}
+.sbbt{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--sbrd);
+  color:rgba(255,255,255,.5);border-radius:8px;padding:8px 6px;font-size:12px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;text-align:center}
+.sbbt:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.9)}
+.sbbt.gold{color:var(--g3);border-color:rgba(212,163,42,.3)}
+.sbbt.gold:hover{background:rgba(212,163,42,.12)}
+
+/* ── MAIN ── */
+#mn{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#tb{padding:13px 26px;border-bottom:1.5px solid var(--brd);
+  display:flex;align-items:center;justify-content:space-between;
+  background:#fff;flex-shrink:0;box-shadow:var(--shadow)}
+.tbtl{font-size:13px;color:var(--t2)}
+.tbtl span{color:var(--t0);font-weight:600}
+.tbr{display:flex;align-items:center;gap:12px}
+.ptxt{font-size:12px;color:var(--t2)}
+.ptxt b{color:var(--g1);font-weight:600}
+.pbar{width:90px;height:5px;background:var(--bg2);border-radius:5px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--g1),var(--g3));border-radius:5px;transition:width .4s}
+
+#cw{flex:1;overflow-y:auto;padding:26px 26px 60px}
+#ct{max-width:860px}
+
+/* ── MODULE HEADER ── */
+.mhdr{margin-bottom:22px}
+.mtag{display:inline-block;background:var(--g4);color:var(--g1);
+  padding:4px 12px;border-radius:20px;font-size:10.5px;letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:10px;font-weight:600;border:1px solid rgba(184,137,30,.2)}
+.mhtitle{font-size:22px;color:var(--t0);margin-bottom:5px;line-height:1.3}
+.mhdesc{color:var(--t2);font-size:13px;line-height:1.65}
+.obj-box{background:#fff;border:1.5px solid var(--brd);
+  border-left:4px solid var(--g2);border-radius:9px;padding:12px 16px;
+  font-size:13px;color:var(--t1);margin-bottom:20px;line-height:1.6;
+  box-shadow:var(--shadow)}
+.obj-box b{color:var(--g1)}
+.done-box{background:#f0fff8;border:1.5px solid rgba(39,168,113,.25);
+  border-radius:9px;padding:10px 15px;font-size:13px;color:var(--grn);margin-bottom:18px;
+  display:flex;align-items:center;gap:8px;font-weight:500}
+
+/* ── LOCKED STATE ── */
+.lock-screen{background:#fff;border:1.5px dashed var(--brd2);border-radius:14px;
+  padding:48px 24px;text-align:center;margin-bottom:20px}
+.lock-icon{font-size:40px;margin-bottom:14px}
+.lock-title{font-size:18px;font-weight:600;color:var(--t0);margin-bottom:8px}
+.lock-msg{font-size:13.5px;color:var(--t2);line-height:1.6}
+.lock-prev{display:inline-block;background:var(--g4);color:var(--g1);
+  border:1px solid rgba(184,137,30,.25);border-radius:8px;padding:7px 16px;
+  font-size:13px;cursor:pointer;margin-top:14px;font-weight:500;transition:all .15s}
+.lock-prev:hover{background:rgba(184,137,30,.15)}
+
+/* ── EXERCISE CARDS ── */
+.ecard{background:#fff;border:1.5px solid var(--brd);border-radius:14px;
+  padding:20px;margin-bottom:16px;box-shadow:var(--shadow);transition:border-color .2s}
+.ecard:hover{border-color:var(--brd2)}
+.eh{display:flex;align-items:flex-start;gap:11px;margin-bottom:15px}
+.enum{background:linear-gradient(135deg,var(--g1),var(--g3));color:#fff;
+  width:26px;height:26px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.eq{font-size:14px;font-weight:500;line-height:1.5;color:var(--t0)}
+.esub{font-size:12.5px;color:var(--t2);margin-top:4px;line-height:1.5}
+.etip{background:#fffbf0;border-left:3px solid var(--g3);
+  padding:9px 12px;border-radius:0 8px 8px 0;font-size:12px;color:var(--g1);
+  margin-top:12px;line-height:1.5;font-weight:500}
+
+/* ── TABLE ── */
+.twrap{border-radius:10px;overflow:hidden;border:1.5px solid var(--brd);box-shadow:var(--shadow)}
+table.etbl{width:100%;border-collapse:collapse}
+table.etbl thead tr{background:var(--g4)}
+table.etbl th{color:var(--g1);font-size:11.5px;font-weight:600;letter-spacing:.3px;
+  padding:9px 11px;text-align:left;border-right:1px solid var(--brd)}
+table.etbl th:last-child{border-right:none;width:36px}
+table.etbl td{border-top:1px solid var(--brd);border-right:1px solid var(--brd);padding:1px}
+table.etbl td:last-child{border-right:none}
+.ti{width:100%;background:transparent;border:none;color:var(--t0);
+  padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:background .15s}
+.ti:focus{background:rgba(184,137,30,.05)}
+.ti::placeholder{color:var(--t3);font-size:12px}
+.tdel{background:transparent;border:none;color:rgba(224,82,82,.3);cursor:pointer;
+  padding:8px;font-size:12px;width:36px;text-align:center;transition:color .15s}
+.tdel:hover{color:var(--red)}
+.btn-add{display:inline-flex;align-items:center;gap:6px;background:var(--g4);
+  color:var(--g1);border:1.5px dashed rgba(184,137,30,.4);border-radius:8px;
+  padding:7px 14px;font-size:12.5px;cursor:pointer;margin-top:9px;
+  font-family:'DM Sans',sans-serif;transition:all .15s;font-weight:500}
+.btn-add:hover{background:rgba(184,137,30,.15)}
+
+/* ── SUBMIT BAR ── */
+.subbar{background:#fff;border:1.5px solid var(--brd);border-radius:14px;
+  padding:18px 22px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  box-shadow:var(--shadow)}
+.subinfo{font-size:13px;color:var(--t2);line-height:1.5}
+.subinfo b{color:var(--t0)}
+.btn-sub{background:linear-gradient(135deg,var(--g1),var(--g3));color:#fff;
+  font-weight:600;padding:11px 24px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:13.5px;white-space:nowrap;
+  display:flex;align-items:center;gap:7px;transition:all .2s;flex-shrink:0}
+.btn-sub:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(184,137,30,.35)}
+
+/* ── ADMIN STATS ── */
+.a-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.astat{background:#fff;border:1.5px solid var(--brd);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.aval{font-size:26px;font-weight:600;color:var(--g1);font-family:'Playfair Display',serif}
+.albl{font-size:12px;color:var(--t2);margin-top:3px}
+.atbl-wrap{background:#fff;border:1.5px solid var(--brd);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.atbl-hd{padding:14px 18px;border-bottom:1.5px solid var(--brd);display:flex;align-items:center;justify-content:space-between;background:var(--bg2)}
+.atbl-hl{font-size:14px;font-weight:600;color:var(--t0)}
+table.atbl{width:100%;border-collapse:collapse;font-size:12.5px}
+table.atbl th{background:var(--g4);color:var(--g1);padding:9px 13px;
+  text-align:left;border-bottom:1.5px solid var(--brd);font-weight:600;font-size:11.5px}
+table.atbl td{padding:9px 13px;border-bottom:1px solid var(--brd);color:var(--t1)}
+table.atbl tr:hover td{background:var(--bg)}
+table.atbl tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:500}
+.bg{background:#e8fdf3;color:var(--grn)}
+.bb{background:#e8f2fd;color:var(--blu)}
+.by{background:var(--g4);color:var(--g1)}
+.det-btn{background:var(--bg2);border:1.5px solid var(--brd);color:var(--t1);
+  border-radius:7px;padding:4px 10px;font-size:11.5px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .15s;font-weight:500}
+.det-btn:hover{color:var(--g1);border-color:var(--g3);background:var(--g4)}
+.empty{text-align:center;padding:48px;color:var(--t2)}
+.empty .ei{font-size:36px;margin-bottom:12px}
+
+/* ── MODALS ── */
+.mover{position:fixed;inset:0;background:rgba(26,32,64,.45);display:flex;
+  align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}
+.mbox{background:#fff;border:1.5px solid var(--brd);border-radius:18px;
+  padding:30px;width:520px;animation:fadeUp .3s ease;position:relative;box-shadow:var(--shadow2)}
+.mclose{position:absolute;top:14px;right:14px;background:var(--bg);
+  border:1px solid var(--brd);color:var(--t2);width:28px;height:28px;border-radius:50%;
+  cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.mclose:hover{background:var(--bg2);color:var(--t0)}
+.mbox h3{font-size:17px;margin-bottom:6px;color:var(--t0)}
+.msub{font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.6}
+.codebox{background:#f8f9fc;border:1.5px solid var(--brd);border-radius:9px;
+  padding:13px;font-family:monospace;font-size:11px;color:var(--t1);line-height:1.7;
+  white-space:pre-wrap;word-break:break-all;max-height:180px;overflow-y:auto;margin-bottom:12px}
+.detmod{width:660px;max-height:82vh;overflow-y:auto}
+.dhead{padding-bottom:14px;border-bottom:1.5px solid var(--brd);margin-bottom:18px}
+.dblk{background:var(--bg);border:1.5px solid var(--brd);border-radius:10px;
+  padding:13px;margin-bottom:10px}
+.dq{font-size:12px;color:var(--t2);margin-bottom:7px;font-weight:500}
+.da{font-size:13.5px;color:var(--t0);line-height:1.6}
+.dtbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+.dtbl th{color:var(--g1);padding:6px 8px;text-align:left;border-bottom:1px solid var(--brd);font-weight:600}
+.dtbl td{padding:6px 8px;color:var(--t1);border-bottom:1px solid var(--brd)}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--sb);
+  color:#fff;padding:13px 18px;border-radius:12px;font-size:13.5px;z-index:9999;
+  transform:translateY(80px);opacity:0;transition:all .3s;max-width:320px;
+  display:flex;align-items:center;gap:9px;box-shadow:var(--shadow2)}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.ok{background:#1a4a35}
+#toast.err{background:#6b1a1a}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- ══════ LOGIN ══════ -->
+<div id="scLogin" class="screen active">
+  <div class="lbox">
+    <div class="lbrand">Akshardham Associates</div>
+    <div class="lsep"></div>
+    <div class="ltitle">Sales Training Portal</div>
+    <div class="lsub">Training exercises complete karein aur apni progress track karein</div>
+
+    <div class="login-tabs">
+      <button class="ltab on" id="ltab0" onclick="switchTab('login')">🔑 Login</button>
+      <button class="ltab" id="ltab1" onclick="switchTab('register')">📝 Naya Account</button>
+      <button class="ltab" id="ltab2" onclick="switchTab('admin')">🔐 Admin</button>
+    </div>
+
+    <!-- LOGIN TAB -->
+    <div id="tabLogin">
+      <label class="lbl">Login ID *</label>
+      <input id="lId" class="inp" type="text" placeholder="Aapka Login ID">
+      <label class="lbl">Password *</label>
+      <input id="lPwd" class="inp" type="password" placeholder="Aapka password"
+        onkeypress="if(event.key==='Enter')loginCand()">
+      <button class="btn-g" onclick="loginCand()">Login Karein →</button>
+      <div style="margin-top:12px;text-align:center;font-size:12.5px;color:var(--t2)">
+        Naya account? &nbsp;<span onclick="switchTab('register')" style="color:var(--g1);cursor:pointer;font-weight:600;text-decoration:underline">Register karein</span>
+      </div>
+    </div>
+
+    <!-- REGISTER TAB -->
+    <div id="tabRegister" style="display:none">
+      <label class="lbl">Apna Poora Naam *</label>
+      <input id="rName" class="inp" type="text" placeholder="Jaise: Ramesh Kumar">
+      <label class="lbl">Login ID banayein *</label>
+      <input id="rId" class="inp" type="text" placeholder="Koi bhi unique ID — jaise: ramesh2024" autocomplete="off">
+      <label class="lbl">Password banayein *</label>
+      <input id="rPwd" class="inp" type="password" placeholder="Apna password" autocomplete="new-password">
+      <label class="lbl">Password Confirm Karein *</label>
+      <input id="rPwd2" class="inp" type="password" placeholder="Wahi password dobara">
+      <button class="btn-g" onclick="registerCand()">Account Banayein →</button>
+      <div style="margin-top:12px;text-align:center;font-size:12.5px;color:var(--t2)">
+        Pehle se account hai? &nbsp;<span onclick="switchTab('login')" style="color:var(--g1);cursor:pointer;font-weight:600;text-decoration:underline">Login karein</span>
+      </div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div id="tabAdmin" style="display:none">
+      <label class="lbl">Admin Password</label>
+      <input id="aPwd" class="inp" type="password" placeholder="Password darj karein"
+        onkeypress="if(event.key==='Enter')loginAdmin()">
+      <button class="btn-g" onclick="loginAdmin()">Admin Dashboard →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ APP ══════ -->
+<div id="scApp" class="screen">
+  <div id="sb">
+    <div class="sbh">
+      <div class="sblogo">Akshardham Associates</div>
+      <div class="sbsub">Sales Training Portal</div>
+      <div class="sbuser" id="sbuser"></div>
+    </div>
+    <div class="sbnav">
+      <div class="navlbl">Training Modules</div>
+      <div id="mnav"></div>
+    </div>
+    <div class="sbft">
+      <button class="sbbt" onclick="logout()">⏻ Logout</button>
+      <button class="sbbt gold" onclick="openSettings()">⚙ Sheets</button>
+    </div>
+  </div>
+
+  <div id="mn">
+    <div id="tb">
+      <div class="tbtl">Training Portal &nbsp;›&nbsp; <span id="tbmod">—</span></div>
+      <div class="tbr">
+        <div class="ptxt" id="ptxt"></div>
+        <div class="pbar"><div class="pfill" id="pfill" style="width:0%"></div></div>
+        <div id="adminBtn"></div>
+      </div>
+    </div>
+    <div id="cw"><div id="ct"></div></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- SETTINGS MODAL -->
+<div id="mSet" class="mover" style="display:none">
+  <div class="mbox">
+    <button class="mclose" onclick="$('mSet').style.display='none'">✕</button>
+    <h3>⚙ Google Sheets Connect Karein</h3>
+    <div class="msub">Apps Script deploy karne ke baad URL yahan paste karein.</div>
+    <label class="lbl">Apps Script Web App URL</label>
+    <input id="urlIn" class="inp" type="url" placeholder="https://script.google.com/macros/s/...">
+    <button class="btn-g" onclick="saveUrl()">Save & Connect</button>
+    <div style="margin-top:18px;border-top:1px solid var(--brd);padding-top:16px">
+      <div style="font-size:12px;color:var(--t1);margin-bottom:8px;font-weight:600">📋 Google Apps Script Code (copy karein):</div>
+      <div class="codebox" id="codeBox"></div>
+      <button class="btn-add" style="width:100%;justify-content:center" onclick="copyCode()">📋 Code Copy Karein</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div id="mDet" class="mover" style="display:none">
+  <div class="mbox detmod">
+    <button class="mclose" onclick="$('mDet').style.display='none'">✕</button>
+    <div class="dhead">
+      <div class="mtag" id="dTag"></div>
+      <h3 id="dTitle" style="margin-top:8px"></h3>
+      <div style="font-size:12.5px;color:var(--t2);margin-top:4px" id="dMeta"></div>
+    </div>
+    <div id="dContent"></div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PWD="admin@akshardham";
+
+const SCRIPT_CODE=`function doPost(e) {
+  try {
+    var d = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sn = 'Training_Submissions';
+    var sh = ss.getSheetByName(sn) || ss.insertSheet(sn);
+    if (sh.getLastRow() === 0) {
+      sh.appendRow(['Timestamp','Name','Mobile',
+        'Module No','Module Title','Answers JSON']);
+    }
+    sh.appendRow([new Date().toLocaleString('hi-IN'),
+      d.name, d.mobile, d.modId, d.modTitle,
+      JSON.stringify(d.answers)]);
+    return ContentService
+      .createTextOutput(JSON.stringify({ok:true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({err:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+function doGet(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Training_Submissions');
+  if (!sh) return ContentService
+    .createTextOutput(JSON.stringify({data:[]}))
+    .setMimeType(ContentService.MimeType.JSON);
+  var v = sh.getDataRange().getValues();
+  var h = v[0]; var rows = v.slice(1).map(function(r){
+    var o={}; h.forEach(function(k,i){o[k]=r[i];}); return o;
+  });
+  return ContentService
+    .createTextOutput(JSON.stringify({data:rows}))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+
+// ── MODULE DATA ──
+const MODS=[
+  {id:1,lbl:"M1",title:"Module 1",sub:"Company Intro + Real Estate Basics",
+   desc:"Company ka parichay, real estate ki basic jaankari, colonization aur plot measurement.",
+   obj:"CRM App mein login karke apne pehle customer ki details add karna seekhein aur nearby projects ki suchi taiyaar karein.",
+   exs:[{id:"m1e1",num:1,
+     q:"Aapke aas-paas kaunse Colony / Projects chal rahe hain? Suchi banayein:",
+     sub:"Apne shahar ya gaon ke aas-paas ke real estate projects ki jankari bharein",
+     tip:"Jitne zyada projects ka pata lagayein, utna better — yeh competitor knowledge kaam aayegi",
+     cols:["Colony / Project Ka Naam","Location / Area","Developer Ka Naam","Plot Size (approx)","Rate (per gaj/foot)"],
+     rows:[["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]}]},
+
+  {id:2,lbl:"M2",title:"Module 2",sub:"Local Contacts — Aapke Paas Ke Log",
+   desc:"Apne aas-paas ke woh log dhundhein jo real estate mein interested ho sakte hain — yeh aapki pehli prospect list hogi.",
+   obj:"Apne network mein se potential buyers identify karein — yeh aapka sabse pehla sales pipeline hoga.",
+   exs:[
+     {id:"m2e1",num:1,
+      q:"Apne Local Contacts ki List banao — jinhe plot lena ho sakta hai:",
+      sub:"Apne gaon / mohalle / city ke logon ki details bharein",
+      tip:"Kam se kam 5 log dhundo — jitne zyada utna behtar",
+      cols:["Naam","Pad / POST","Mobile No.","WhatsApp? (Y/N)"],
+      rows:[["","","",""],["","","",""],["","","",""],["","","",""],["","","",""],["","","",""],["","","",""],["","","",""]]},
+     {id:"m2e2",num:2,
+      q:"5 Sample Target Customers Identify karo:",
+      sub:"Apne aas-paas 5 aise log jinhe plot kharidne ki sambhavna hai",
+      tip:"Purpose mein likho: Ghar banana / Nivesh / Parivar ke liye, etc.",
+      cols:["Graahak Ka Naam","Vyavsay","Contact No.","Address / Kshetra","Zaroorat / Purpose"],
+      rows:[["","","","",""],["","","","",""],["","","","",""],["","","","",""],["","","","",""]]}]},
+
+  {id:3,lbl:"M3",title:"Module 3",sub:"Product Knowledge + Market Analysis",
+   desc:"Apne shahar ke real estate market ki gehri samajh develop karein.",
+   obj:"Market ki gehri samajh develop karein — yeh jaankari customer ko confidence deti hai ki 'Is area mein invest kyun karein'.",
+   exs:[
+     {id:"m3e1",num:1,
+      q:"Aapke Shahar ke pramukh Roads / Planning Areas — Priority kram mein likhein:",
+      sub:"Jahan plot ki demand sabse zyada ho, ushe No.1 priority dein",
+      tip:"Jaise: No.1 — Kota Road | No.2 — Jhalawar Road | No.3 — Planning Area XYZ",
+      cols:["Priority No.","Road / Area Ka Naam","Kyon Priority Hai?"],
+      rows:[["1","",""],["2","",""],["3","",""],["4","",""],["5","",""]]},
+     {id:"m3e2",num:2,
+      q:"Aapke yahan Naap (Measurement) ki Ikaai kya chalti hai?",
+      sub:"Sahi option tick karein ya naya add karein",
+      tip:"Gaaj / Foot / Meter / Bigha — jo bhi aapke area mein chalti ho",
+      cols:["Ikaai Ka Naam","Aapke Shahar Mein Chalti Hai? (Y/N)","Example (kitne gaaj/foot ka plot)"],
+      rows:[["Gaaj","",""],["Foot","",""],["Meter","",""],["Bigha","",""]]},
+     {id:"m3e3",num:3,
+      q:"Apne aas-paas 3 Projects ki Jaankari ikatha karo:",
+      sub:"Kisi bhi 3 chal rahe Real Estate projects mein jaao aur form bharein",
+      tip:"Brochure ya map milne par note zaroor karein",
+      cols:["Project Ka Naam","Coloniser Ka Naam","No. of Plots","Rate (per gaj/foot)","Suvidhayen","Map/Brochure? (Y/N)"],
+      rows:[["","","","","",""],["","","","","",""],["","","","","",""]]},
+     {id:"m3e4",num:4,
+      q:"Aapke kshetra mein Real Estate badhane wale Vikas Karya likhein:",
+      sub:"Aise kaam jo zameen ki kimat badha sakte hain — sadak, hospital, highway, etc.",
+      tip:"Jaise: Nayi sadak, Railway line, Sarkari office, School/Hospital...",
+      cols:["Vikas Karya Ka Naam","Kahan Ho Raha Hai?","Real Estate Par Kya Asar Hoga?"],
+      rows:[["","",""],["","",""],["","",""],["","",""]]}]},
+
+  {id:4,lbl:"M4",title:"Module 4",sub:"Need Analysis — Graahak Ki Zaroorat",
+   desc:"Asli grahkon se milkar unki zaroorat (Purpose, Budget, Location) samjhna seekhein — yahi sales ka pehla kadam hai.",
+   obj:"Bazar mein jaayein, 5 logon se baat karein aur unka profile banayein.",
+   exs:[{id:"m4e1",num:1,
+     q:"5 Graahkon Se Milein aur Unki Zaroorat Pahchanein:",
+     sub:"Pehle Purpose samjho, phir Budget, phir Location — is order mein poochhna best hai",
+     tip:"Agar koi nahi batata — to 'End User ya Investor?' se shuru karo, yeh simple sawaal hai.",
+     cols:["Graahak Ka Naam","Mobile No.","Vyavsay","End User/Investor?","Purpose/Uddeshya","Budget (andazan)","Location Pasand"],
+     rows:[["","","","","","",""],["","","","","","",""],["","","","","","",""],["","","","","","",""],["","","","","","",""]]}]},
+
+  {id:5,lbl:"M5",title:"Module 5",sub:"Telecalling — Anubhav Log Karo",
+   desc:"Telecalling ki practice karein — asli calls se pata chalega ki graahak kaise respond karte hain.",
+   obj:"M4 mein identify kiye huye logon ko call karein ya naye log dhundein. Har call ka record bharein.",
+   exs:[{id:"m5e1",num:1,
+     q:"5 Graahkon Se Call Karein aur Anubhav Log Karein:",
+     sub:"Har call ka honest record bharein — achha ho ya bura, dono se seekha jaata hai",
+     tip:"Anubhav mein likhein: Kya baat hui, graahak ne kaise response diya, kya problem aayi.",
+     cols:["Graahak Ka Naam","Mobile No.","Baat Hui? (Y/N)","Apna Anubhav (kya hua, kya response mila)"],
+     rows:[["","","",""],["","","",""],["","","",""],["","","",""],["","","",""]] }]},
+
+  {id:7,lbl:"M7",title:"Module 7",sub:"Coloniser Se Commission + Site Visit",
+   desc:"Coloniser ke saath real conversation practice karein aur site visit experience lein — yehi aapki earning ka tarika hai.",
+   obj:"Field practice — asli market mein jaao, commission negotiate karo aur site dekho.",
+   exs:[
+     {id:"m7e1",num:1,
+      q:"A. 2 Colonisers Ke Paas Jaao — Commission Ki Baat Karo:",
+      sub:"Script: \"Sir, main aapke plots customers ko dikhaunga — mujhe kitna commission milega?\" Target: 3-4% tak",
+      tip:"Dono Colonisers ki alag-alag entries bharein",
+      cols:["Coloniser Ka Naam","Project Ka Naam","Commission % Agreed","Baat Kaisi Rahi? (notes)"],
+      rows:[["","","",""],["","","",""]]},
+     {id:"m7e2",num:2,
+      q:"B. 2 Site Visits Karo — Dono Colonisers Ki Site Par Jaao:",
+      sub:"Khud dekhkaro — Plot kahan hai, road kaisi hai, location kaisi hai",
+      tip:"Site visit ke baad: 'Is site ko main kaise describe karunga apne graahak ko?' — practice mein bol ke dekho.",
+      cols:["Coloniser / Colony Ka Naam","Site Location","Road / Access Kaisi Hai?","Plot Ka Size (approx)","Aapka Observation"],
+      rows:[["","","","",""],["","","","",""]]}]},
+
+  {id:8,lbl:"M8",title:"Module 8",sub:"Objection Handling",
+   desc:"Real conversations mein aaye objections document karein — isse poori team mazboot banegi.",
+   obj:"Field practice mein jo objections aaye — woh niche likhein aur batayein kaise handle kiya.",
+   exs:[{id:"m8e1",num:1,
+     q:"Aapke Pramukh Objections aur Handle Karne Ka Tarika (minimum 3 entries):",
+     sub:"Field practice mein jo bhi objections aaye — woh honestly likhein",
+     tip:"Koi bhi objection bada nahi hota — practice se har objection handle hota hai.",
+     cols:["Objection Kya Tha?","Aapne Kya Jawab Diya?","Graahak Ka Response?"],
+     rows:[["","",""],["","",""],["","",""],["","",""],["","",""]]}]},
+
+  {id:9,lbl:"M9",title:"Module 9",sub:"AI Use — Follow Up Examples",
+   desc:"Follow up ke real examples document karein — pattern samjhenge aur AI tools ka use seekhenge.",
+   obj:"Apne 5 grahkon ke saath jo follow up calls / messages hue, unka record bharein.",
+   exs:[{id:"m9e1",num:1,
+     q:"Aapke 5 Follow Up Examples — Real Anubhav Se:",
+     sub:"Har follow up call ya message ka honest record bharein",
+     tip:"5 follow ups ki alag-alag entries bharein",
+     cols:["Follow No.","Purpose (Kisliye Call Kiya?)","Customer Response","Lesson Learnt"],
+     rows:[["1","","",""],["2","","",""],["3","","",""],["4","","",""],["5","","",""]]}]},
+
+  {id:10,lbl:"M10",title:"Module 10",sub:"Market Stories + Personal Reflection",
+   desc:"Jo log is field mein achha kaam kar rahe hain unse seekhein aur training ka reflection karein.",
+   obj:"Bazar mein jaayein, logon se poochhein — jo suno woh likhein aur personal reflection karein.",
+   exs:[
+     {id:"m10e1",num:1,
+      q:"2 Agents + 2 Colonisers Ki Achhi Baatein — With Example / Story:",
+      sub:"'Fulaan dalaal / coloniser ke baare mein kya achha hai?' poochhein",
+      tip:"2 Agent + 2 Coloniser = 4 entries zaroori hain.",
+      cols:["Naam","Agent / Coloniser?","Unke Baare Mein Achhi Baat","Example / Story","Yeh Aapne Kisse Suna?"],
+      rows:[["","Agent","","",""],["","Agent","","",""],["","Coloniser","","",""],["","Coloniser","","",""]]},
+     {id:"m10e2",num:2,
+      q:"Aapne Is Training Se Kya Seekha? — Personal Reflection:",
+      sub:"M1 se M10 tak (M6 chhod kar) — 9 rows bharein",
+      tip:"Yahi reflection aapko kal ke agent se aaj ka better agent banayegi.",
+      cols:["Module No.","Sabse Important Cheez Jo Seekhi","Mujhe Kya Improve Karna Hai"],
+      rows:[["M1","",""],["M2","",""],["M3","",""],["M4","",""],["M5","",""],["M7","",""],["M8","",""],["M9","",""],["M10","",""]]}]}
+];
+
+// ── STATE ──
+let uName='',uMob='',isAdmin=false,activeMod=1,completed=new Set(),allData={};
+let scriptUrl=localStorage.getItem('aa_url')||'';
+let adminSubs=[];
+
+function loadData(){
+  try{
+    const k='aa_v3_'+uMob;
+    const d=JSON.parse(localStorage.getItem(k)||'{}');
+    allData=d.ans||{}; completed=new Set(d.done||[]);
+  }catch(e){}
+}
+function saveData(){
+  localStorage.setItem('aa_v3_'+uMob,JSON.stringify({ans:allData,done:[...completed]}));
+}
+
+function $(id){return document.getElementById(id);}
+
+// ── AUTH HELPERS ──
+function getUsers(){ try{return JSON.parse(localStorage.getItem('aa_users')||'{}');}catch(e){return {};} }
+function saveUsers(u){ localStorage.setItem('aa_users',JSON.stringify(u)); }
+
+// ── LOGIN ──
+function switchTab(t){
+  $('tabLogin').style.display=t==='login'?'block':'none';
+  $('tabRegister').style.display=t==='register'?'block':'none';
+  $('tabAdmin').style.display=t==='admin'?'block':'none';
+  document.querySelectorAll('.ltab').forEach((b,i)=>{
+    b.classList.toggle('on',(t==='login'&&i===0)||(t==='register'&&i===1)||(t==='admin'&&i===2));
+  });
+}
+
+function registerCand(){
+  const name=$('rName').value.trim();
+  const id=$('rId').value.trim().toLowerCase();
+  const pwd=$('rPwd').value;
+  const pwd2=$('rPwd2').value;
+  if(!name){toast('❗ Naam likhein','err');return;}
+  if(!id||id.length<3){toast('❗ Login ID kam se kam 3 characters ka hona chahiye','err');return;}
+  if(!pwd||pwd.length<4){toast('❗ Password kam se kam 4 characters ka hona chahiye','err');return;}
+  if(pwd!==pwd2){toast('❗ Dono passwords match nahi kar rahe','err');return;}
+  const users=getUsers();
+  if(users[id]){toast('❌ Yeh Login ID already liya ja chuka hai — koi aur ID choose karein','err');return;}
+  users[id]={name,pwd};
+  saveUsers(users);
+  toast('✅ Account ban gaya! Ab login karein','ok');
+  $('lId').value=id; $('lPwd').value='';
+  switchTab('login');
+}
+
+function loginCand(){
+  const id=$('lId').value.trim().toLowerCase();
+  const pwd=$('lPwd').value;
+  if(!id){toast('❗ Login ID likhein','err');return;}
+  if(!pwd){toast('❗ Password likhein','err');return;}
+  const users=getUsers();
+  if(!users[id]){toast('❌ Yeh Login ID nahi mila — pehle register karein','err');return;}
+  if(users[id].pwd!==pwd){toast('❌ Galat password','err');return;}
+  uName=users[id].name; uMob=id; isAdmin=false;
+  loadData(); startApp();
+}
+
+function loginAdmin(){
+  if($('aPwd').value!==ADMIN_PWD){toast('❌ Galat password','err');return;}
+  uName='Admin (Krishan Ji)';uMob='ADMIN';isAdmin=true; startApp();
+}
+function startApp(){
+  $('scLogin').classList.remove('active');
+  $('scApp').classList.add('active');
+  buildSidebar();
+  if(isAdmin) renderAdmin(); else renderMod(MODS[0].id);
+}
+function logout(){
+  uName='';uMob='';isAdmin=false;allData={};completed=new Set();
+  $('scApp').classList.remove('active');
+  $('scLogin').classList.add('active');
+  $('lId').value='';$('lPwd').value='';$('aPwd').value='';
+  switchTab('login');
+}
+
+// ── SIDEBAR ──
+function buildSidebar(){
+  const init=uName.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  $('sbuser').innerHTML=`<div class="sbav">${init}</div>
+    <div><div class="sbname">${uName}</div>
+    <div class="sbmob">${isAdmin?'Administrator':'ID: '+uMob}</div></div>`;
+  refreshNav();
+  $('codeBox').textContent=SCRIPT_CODE;
+  if(scriptUrl)$('urlIn').value=scriptUrl;
+}
+
+function refreshNav(){
+  if(isAdmin){
+    $('mnav').innerHTML=`<button class="mbtn act" onclick="renderAdmin()">
+      <span class="mnum">★</span><span class="mtxt">All Submissions</span></button>`;
+    $('ptxt').innerHTML=''; $('pfill').style.width='0%'; return;
+  }
+
+  // Module locking: module N opens only if N-1 is complete (first module always open)
+  $('mnav').innerHTML=MODS.map((m,idx)=>{
+    const prevDone = idx===0 || completed.has(MODS[idx-1].id);
+    const isDone = completed.has(m.id);
+    const isLocked = !prevDone && !isDone;
+    const isAct = m.id===activeMod && !isLocked;
+    let cls='mbtn';
+    if(isAct) cls+=' act';
+    if(isDone) cls+=' done';
+    if(isLocked) cls+=' locked';
+    const onclick=isLocked?`showLocked(${m.id})`:`renderMod(${m.id})`;
+    return `<button class="${cls}" id="mb${m.id}" onclick="${onclick}">
+      <span class="mnum">${isDone?'✓':m.lbl}</span>
+      <span class="mtxt">${m.title}<br>
+        <span style="font-size:10.5px;opacity:.7">${m.sub.slice(0,30)}…</span>
+      </span>
+      <span class="mchk">✓</span>
+      <span class="mlck">🔒</span>
+    </button>`;
+  }).join('');
+
+  const d=completed.size,t=MODS.length;
+  $('ptxt').innerHTML=`Progress: <b>${d}/${t}</b>`;
+  $('pfill').style.width=Math.round(d/t*100)+'%';
+}
+
+// ── LOCKED MESSAGE ──
+function showLocked(id){
+  const idx=MODS.findIndex(m=>m.id===id);
+  const prev=MODS[idx-1];
+  $('tbmod').textContent='🔒 Locked';
+  $('ct').innerHTML=`<div class="lock-screen">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Yeh Module Abhi Locked Hai</div>
+    <div class="lock-msg">
+      Pehle <b>${prev.title}: ${prev.sub}</b> complete karein.<br>
+      Submit karne ke baad yeh module automatically unlock ho jayega.
+    </div>
+    <div class="lock-prev" onclick="renderMod(${prev.id})">
+      ← ${prev.title} Par Jaayein
+    </div>
+  </div>`;
+  $('cw').scrollTop=0;
+}
+
+// ── RENDER MODULE ──
+function renderMod(id){
+  // Check if locked
+  const idx=MODS.findIndex(m=>m.id===id);
+  if(idx>0 && !completed.has(MODS[idx-1].id) && !completed.has(id)){
+    showLocked(id); activeMod=id; refreshNav(); return;
+  }
+
+  activeMod=id;
+  const mod=MODS.find(m=>m.id===id);
+  refreshNav();
+  $('tbmod').textContent=mod.title+' — '+mod.sub;
+  const done=completed.has(id);
+  const saved=allData[id]||{};
+
+  let html=`<div class="mhdr">
+    <div class="mtag">${mod.lbl} &nbsp;|&nbsp; ${mod.sub.split('—')[0].trim()}</div>
+    <div class="mhtitle">${mod.title}: ${mod.sub}</div>
+    <div class="mhdesc">${mod.desc}</div>
+  </div>
+  <div class="obj-box"><b>🎯 Uddeshya:</b> ${mod.obj}</div>`;
+
+  if(done) html+=`<div class="done-box">✅ Aapne ye module submit kar diya hai. Zaroorat ho to neeche edit karke re-submit kar sakte hain.</div>`;
+
+  mod.exs.forEach((ex,i)=>{ html+=renderEx(ex,i+1,saved[ex.id]); });
+
+  html+=`<div class="subbar">
+    <div class="subinfo">Sabhi forms bharne ke baad submit karein.<br>
+      <b>${mod.exs.length} exercise${mod.exs.length>1?'s':''}</b> hain is module mein.</div>
+    <button class="btn-sub" onclick="submitMod()">
+      ${done?'🔄 Re-Submit':'✅ Submit'} ${mod.title}
+    </button>
+  </div>`;
+
+  $('ct').innerHTML=html;
+  $('cw').scrollTop=0;
+}
+
+function renderEx(ex,n,saved){
+  const savedRows=(saved&&Array.isArray(saved))?saved:ex.rows;
+  const hdr=ex.cols.map(c=>`<th>${c}</th>`).join('')+`<th style="width:36px"></th>`;
+  const rows=savedRows.map(row=>{
+    const cells=ex.cols.map((c,ci)=>
+      `<td><input class="ti" value="${esc(row[ci]||'')}" placeholder="${c}..."></td>`
+    ).join('');
+    return `<tr>${cells}<td><button class="tdel" onclick="this.closest('tr').remove()">✕</button></td></tr>`;
+  }).join('');
+  const body=`<div class="twrap">
+    <table class="etbl"><thead><tr>${hdr}</tr></thead>
+    <tbody id="tb_${ex.id}">${rows}</tbody></table>
+  </div>
+  <button class="btn-add" onclick="addRow('tb_${ex.id}',${ex.cols.length})">＋ Row Add Karein</button>`;
+  const tip=ex.tip?`<div class="etip">★ &nbsp;${ex.tip}</div>`:'';
+  const sub=ex.sub?`<div class="esub">${ex.sub}</div>`:'';
+  return `<div class="ecard">
+    <div class="eh"><div class="enum">${n}</div>
+    <div style="flex:1"><div class="eq">${ex.q}</div>${sub}</div></div>
+    ${body}${tip}
+  </div>`;
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function addRow(tbId,nc){
+  const tb=document.getElementById(tbId);
+  const tr=document.createElement('tr');
+  for(let i=0;i<nc;i++){const td=document.createElement('td');td.innerHTML=`<input class="ti" placeholder="...">`;tr.appendChild(td);}
+  const td2=document.createElement('td');td2.innerHTML=`<button class="tdel" onclick="this.closest('tr').remove()">✕</button>`;
+  tr.appendChild(td2); tb.appendChild(tr); tr.querySelector('input').focus();
+}
+
+function collectMod(id){
+  const mod=MODS.find(m=>m.id===id),out={};
+  mod.exs.forEach(ex=>{
+    const rows=[];
+    const tb=document.getElementById('tb_'+ex.id);
+    if(tb) tb.querySelectorAll('tr').forEach(tr=>{
+      const r=[]; tr.querySelectorAll('input.ti').forEach(i=>r.push(i.value)); rows.push(r);
+    });
+    out[ex.id]=rows;
+  });
+  return out;
+}
+
+async function submitMod(){
+  const mod=MODS.find(m=>m.id===activeMod);
+  const ans=collectMod(activeMod);
+  allData[activeMod]=ans; completed.add(activeMod); saveData(); refreshNav();
+
+  if(scriptUrl){
+    toast('⏳ Google Sheets mein save ho raha hai...','');
+    try{
+      await fetch(scriptUrl,{method:'POST',
+        body:JSON.stringify({name:uName,mobile:uMob,modId:activeMod,
+          modTitle:mod.title+' — '+mod.sub,answers:ans,ts:new Date().toISOString()})});
+    }catch(e){}
+  }
+
+  toast('✅ '+mod.title+' submit ho gaya! Agla module unlock ho gaya.','ok');
+
+  // auto advance to next unlocked module
+  const idx=MODS.findIndex(m=>m.id===activeMod);
+  if(idx<MODS.length-1) setTimeout(()=>renderMod(MODS[idx+1].id),1500);
+}
+
+// ── ADMIN ──
+async function renderAdmin(){
+  $('tbmod').textContent='Admin Dashboard';
+  $('ct').innerHTML=`<div class="mhdr"><div class="mtag">Admin</div>
+    <div class="mhtitle">Team Submissions</div></div>
+    <div class="empty"><div class="ei">⏳</div><p>Data load ho raha hai...</p></div>`;
+  if(!scriptUrl){
+    $('ct').innerHTML=`<div class="mhdr"><div class="mtag">Admin</div>
+      <div class="mhtitle">Team Submissions</div></div>
+      <div class="empty"><div class="ei">⚙️</div>
+      <p>Google Sheets URL set nahi hai.<br>⚙ Sheets button mein Script URL add karein.</p></div>`;
+    return;
+  }
+  try{
+    const r=await fetch(scriptUrl+'?admin=1');
+    const j=await r.json();
+    adminSubs=j.data||[]; buildAdminTable();
+  }catch(e){
+    $('ct').innerHTML+=`<div class="empty"><div class="ei">❌</div>
+      <p>Data load nahi hua. Apps Script properly deployed hai ki nahi check karein.</p></div>`;
+  }
+}
+
+function buildAdminTable(){
+  const d=adminSubs;
+  const cands=[...new Set(d.map(r=>r['Mobile']))].filter(Boolean);
+  const mods=[...new Set(d.map(r=>r['Module No']))].filter(Boolean);
+  let html=`<div class="mhdr"><div class="mtag">Admin Dashboard</div>
+    <div class="mhtitle">Team Training Submissions</div>
+    <div class="mhdesc">${d.length} submissions • ${cands.length} candidates • ${mods.length} modules covered</div>
+  </div>
+  <div class="a-stats">
+    <div class="astat"><div class="aval">${d.length}</div><div class="albl">Total Submissions</div></div>
+    <div class="astat"><div class="aval">${cands.length}</div><div class="albl">Candidates</div></div>
+    <div class="astat"><div class="aval">${mods.length}</div><div class="albl">Modules Covered</div></div>
+  </div>
+  <div class="atbl-wrap">
+    <div class="atbl-hd"><div class="atbl-hl">📋 Sabhi Submissions</div>
+      <button class="btn-add" onclick="renderAdmin()">🔄 Refresh</button></div>`;
+  if(!d.length){
+    html+=`<div class="empty"><div class="ei">📭</div><p>Abhi koi submission nahi aayi</p></div>`;
+  } else {
+    html+=`<table class="atbl"><thead><tr><th>Timestamp</th><th>Naam</th><th>Mobile</th><th>Module</th><th>Action</th></tr></thead><tbody>`;
+    d.slice().reverse().forEach((row,i)=>{
+      html+=`<tr><td>${row['Timestamp']||'—'}</td>
+        <td><b>${row['Name']||'—'}</b></td>
+        <td style="font-family:monospace">${row['Mobile']||'—'}</td>
+        <td><span class="badge by">${row['Module Title']||'M'+row['Module No']}</span></td>
+        <td><button class="det-btn" onclick="showDetail(${d.length-1-i})">👁 Detail</button></td></tr>`;
+    });
+    html+=`</tbody></table>`;
+  }
+  $('ct').innerHTML=html+'</div>';
+}
+
+function showDetail(idx){
+  const row=adminSubs[idx]; if(!row) return;
+  let ans={}; try{ans=JSON.parse(row['Answers JSON']||'{}');}catch(e){}
+  const mod=MODS.find(m=>m.id===parseInt(row['Module No']));
+  let body='';
+  if(mod){
+    mod.exs.forEach((ex,ei)=>{
+      const a=ans[ex.id];
+      let ah=`<div class="da" style="color:var(--t3);font-style:italic">Empty</div>`;
+      if(Array.isArray(a)&&a.some(r=>r.some(c=>c))){
+        ah=`<table class="dtbl"><thead><tr>${ex.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+          <tbody>${a.filter(r=>r.some(c=>c)).map(r=>`<tr>${r.map(c=>`<td>${c||'—'}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+      }
+      body+=`<div class="dblk"><div class="dq">Exercise ${ei+1}: ${ex.q}</div>${ah}</div>`;
+    });
+  }
+  $('dTag').textContent=row['Module Title']||'Module '+row['Module No'];
+  $('dTitle').textContent=row['Name']||'—';
+  $('dMeta').textContent=`Mobile: ${row['Mobile']} • ${row['Timestamp']}`;
+  $('dContent').innerHTML=body;
+  $('mDet').style.display='flex';
+}
+
+// ── SETTINGS ──
+function openSettings(){ $('mSet').style.display='flex'; if(scriptUrl)$('urlIn').value=scriptUrl; }
+function saveUrl(){
+  const u=$('urlIn').value.trim();
+  if(!u){toast('❗ URL likhein','err');return;}
+  scriptUrl=u; localStorage.setItem('aa_url',u);
+  $('mSet').style.display='none'; toast('✅ Google Sheets connected!','ok');
+}
+function copyCode(){ navigator.clipboard.writeText(SCRIPT_CODE).then(()=>toast('📋 Code copy ho gaya!','ok')); }
+
+['mSet','mDet'].forEach(id=>{ $(id).addEventListener('click',function(e){if(e.target===this)this.style.display='none';}); });
+
+// ── TOAST ──
+let toastT;
+function toast(msg,type){
+  const t=$('toast');t.textContent=msg;
+  t.className='show'+(type==='ok'?' ok':type==='err'?' err':'');
+  clearTimeout(toastT); toastT=setTimeout(()=>{t.className='';},3500);
+}
+
+$('rName').addEventListener('keypress',e=>{if(e.key==='Enter')$('rId').focus();});
+$('rId').addEventListener('keypress',e=>{if(e.key==='Enter')$('rPwd').focus();});
+$('rPwd').addEventListener('keypress',e=>{if(e.key==='Enter')$('rPwd2').focus();});
+$('rPwd2').addEventListener('keypress',e=>{if(e.key==='Enter')registerCand();});
+$('lId').addEventListener('keypress',e=>{if(e.key==='Enter')$('lPwd').focus();});
+$('lPwd').addEventListener('keypress',e=>{if(e.key==='Enter')loginCand();});
+$('aPwd').addEventListener('keypress',e=>{if(e.key==='Enter')loginAdmin();});
+</script>
+</body>
+</html>
